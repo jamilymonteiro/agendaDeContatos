@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-adicionar',
@@ -6,11 +7,12 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./adicionar.page.scss'],
   standalone: false,
 })
-export class AdicionarPage implements OnInit {
+export class AdicionarPage {
 
-  constructor() { }
+  constructor(private router: Router) { }
 
-  ngOnInit() {
+  cancelar() {
+    this.router.navigate(['/tabs/tab1']);
   }
 
 }

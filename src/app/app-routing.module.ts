@@ -6,10 +6,6 @@ const routes: Routes = [
     path: '',
     loadChildren: () => import('./tabs/tabs.module').then(m => m.TabsPageModule)
   },
-  {
-    path: 'adicionar',
-    loadChildren: () => import('./adicionar/adicionar.module').then( m => m.AdicionarPageModule)
-  },
 ];
 @NgModule({
   imports: [

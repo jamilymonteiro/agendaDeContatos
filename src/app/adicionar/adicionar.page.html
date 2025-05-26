@@ -1,5 +1,8 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
+  <ion-toolbar color="dark">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/tab1"></ion-back-button>
+    </ion-buttons>
     <ion-title>Adicionar Contato</ion-title>
   </ion-toolbar>
 </ion-header>
@@ -32,7 +35,7 @@
     
   </ion-list>
 
-  <ion-button expand="full" shape="round" color="success">Salvar</ion-button>
-  <ion-button expand="full" shape="round" color="danger">Cancelar</ion-button>
+  <ion-button expand="full" shape="round" class="botao-salvar">Salvar</ion-button>
+  <ion-button expand="full" shape="round" class="botao-cancel" (click)="cancelar()">Cancelar</ion-button>
   
 </ion-content>
