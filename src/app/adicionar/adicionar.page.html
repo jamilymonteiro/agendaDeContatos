@@ -1,0 +1,38 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Adicionar Contato</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-list>
+    <ion-item>
+      <ion-input label="Nome"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-input label="Contato" type="tel"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-input label="E-mail" type="email"></ion-input>
+    </ion-item>
+    <ion-accordion-group>
+        <ion-accordion value="endereco">
+          <ion-item slot="header">
+            <ion-label>Endereço</ion-label>
+          </ion-item>
+          <div class="ion-padding" slot="content">
+            <ion-input label="Rua"></ion-input>
+            <ion-input label="Número" type="number"></ion-input>
+            <ion-input label="Cidade"></ion-input>
+            <ion-input label="Estado"></ion-input>
+            <ion-input label="País"></ion-input>
+          </div>
+        </ion-accordion>
+    </ion-accordion-group>
+    
+  </ion-list>
+
+  <ion-button expand="full" shape="round" color="success">Salvar</ion-button>
+  <ion-button expand="full" shape="round" color="danger">Cancelar</ion-button>
+  
+</ion-content>
