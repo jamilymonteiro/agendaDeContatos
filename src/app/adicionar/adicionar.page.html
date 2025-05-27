@@ -10,13 +10,13 @@
 <ion-content [fullscreen]="true">
   <ion-list>
     <ion-item>
-      <ion-input label="Nome"></ion-input>
+      <ion-input label="Nome" [(ngModel)]="contato.nome"></ion-input>
     </ion-item>
     <ion-item>
-      <ion-input label="Contato" type="tel"></ion-input>
+      <ion-input label="Contato" type="tel" [(ngModel)]="contato.telefone"></ion-input>
     </ion-item>
     <ion-item>
-      <ion-input label="E-mail" type="email"></ion-input>
+      <ion-input label="E-mail" type="email" [(ngModel)]="contato.email"></ion-input>
     </ion-item>
     <ion-accordion-group>
         <ion-accordion value="endereco">
@@ -24,18 +24,18 @@
             <ion-label>Endereço</ion-label>
           </ion-item>
           <div class="ion-padding" slot="content">
-            <ion-input label="Rua"></ion-input>
-            <ion-input label="Número" type="number"></ion-input>
-            <ion-input label="Cidade"></ion-input>
-            <ion-input label="Estado"></ion-input>
-            <ion-input label="País"></ion-input>
+            <ion-input label="Rua" [(ngModel)]="contato.endereco.rua"></ion-input>
+            <ion-input label="Número" type="number" [(ngModel)]="contato.endereco.numero"></ion-input>
+            <ion-input label="Cidade" [(ngModel)]="contato.endereco.cidade"></ion-input>
+            <ion-input label="Estado" [(ngModel)]="contato.endereco.estado"></ion-input>
+            <ion-input label="País" [(ngModel)]="contato.endereco.pais"></ion-input>
           </div>
         </ion-accordion>
     </ion-accordion-group>
     
   </ion-list>
 
-  <ion-button expand="full" shape="round" class="botao-salvar">Salvar</ion-button>
+  <ion-button expand="full" shape="round" class="botao-salvar" (click)="salvar()">Salvar</ion-button>
   <ion-button expand="full" shape="round" class="botao-cancel" (click)="cancelar()">Cancelar</ion-button>
   
 </ion-content>
