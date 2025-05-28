@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { ContatoService } from '../services/contato.service';
+import { Storage } from '@ionic/storage-angular';
 
 @Component({
   selector: 'app-adicionar',
@@ -8,13 +8,17 @@ import { ContatoService } from '../services/contato.service';
   styleUrls: ['./adicionar.page.scss'],
   standalone: false,
 })
-
 export class AdicionarPage {
-  contato: any = this.getContatoInicial();
+  contato: Contato = this.getContatoInicial();
+  contatos: Contato[] = [];
+  private chave_storage = 'lista_contatos';
 
-  constructor(private contatoService: ContatoService, private router: Router) {}
+  constructor(private router: Router, private storage: Storage) {
+    this.iniciarStorage();
+    this.carregar();
+  }
 
-  getContatoInicial() {
+  getContatoInicial(): Contato {
     return {
       nome: '',
       telefone: '',
@@ -29,23 +33,51 @@ export class AdicionarPage {
     };
   }
 
-  ionViewWillEnter() {
-    this.contato = this.getContatoInicial();
+  async iniciarStorage() {
+    this.storage = await this.storage.create();
+  }
+
+  async carregar() {
+    this.contatos = await this.storage.get(this.chave_storage);
+  }
+
+  private persistir() {
+    this.storage.set(this.chave_storage, this.contatos);
   }
 
   async salvar() {
-    const { nome, telefone, email } = this.contato;
+  const { nome, telefone, email } = this.contato;
+  this.persistir();
 
-    if (!nome || !telefone || !email) {
-      alert('Preencha todos os campos obrigatórios!');
-      return;
-    }
-
-    await this.contatoService.salvarContato(this.contato);
-    this.router.navigate(['/tabs/tab1']);
+  if (!nome || !telefone || !email) {
+    alert('Preencha todos os campos obrigatórios!');
+    return;
   }
+
+  // Recupera os contatos salvos, ou cria uma lista vazia se não houver nada
+  const contatos: any[] = await this.storage.get('lista_contatos') || [];
+
+  contatos.push(this.contato); 
+  await this.storage.set('lista_contatos', contatos);
+
+  this.router.navigate(['/tabs/tab1']);
+}
 
   cancelar() {
     this.router.navigate(['/tabs/tab1']);
   }
+  
+}
+
+class Contato {
+  nome!: string;
+  telefone!: string;
+  email!: string;
+  endereco = {
+    rua: '',
+    numero: '',
+    cidade: '',
+    estado: '',
+    pais: ''
+  };
 }

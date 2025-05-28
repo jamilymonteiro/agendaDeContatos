@@ -16,19 +16,25 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
- <ion-list *ngFor="let letra of contatosAgrupados | keyvalue : alphabetical">
-  <ion-item-divider>
-    <ion-label>{{ letra.key }}</ion-label>
-  </ion-item-divider>
-  <ion-item *ngFor="let contato of letra.value">
-    {{ contato.nome }}
+  <ion-list *ngFor="let grupo of contatosAgrupados">
+    <ion-item-divider>
+      <ion-label><strong>{{ grupo.letra }}</strong></ion-label>
+    </ion-item-divider>
+
+    <ion-item *ngFor="let contato of grupo.contatos">
+      <ion-label>
+        <h2>{{ contato.nome }}</h2>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+
+  <ion-item *ngIf="contatosAgrupados.length === 0">
+    <ion-label>Nenhum contato encontrado.</ion-label>
   </ion-item>
-</ion-list>
 
   <ion-fab slot="fixed" vertical="bottom" horizontal="end">
     <ion-fab-button color="dark" [routerLink]="['/tabs/adicionar']">
       <ion-icon name="person-add-outline"></ion-icon>
     </ion-fab-button>
   </ion-fab>
-  
 </ion-content>

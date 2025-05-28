@@ -1,60 +1,77 @@
-import { Component, OnInit } from '@angular/core';
-import { ContatoService } from '../services/contato.service';
+import { Component } from '@angular/core';
+import { Storage } from '@ionic/storage-angular';
 
 @Component({
   selector: 'app-tab1',
   templateUrl: 'tab1.page.html',
   styleUrls: ['tab1.page.scss'],
-  standalone: false,
+  standalone: false
 })
-export class Tab1Page implements OnInit {
-  contatosOriginais: any[] = []; 
-  contatosAgrupados: { [letra: string]: any[] } = {}; 
-  termoBusca: string = ''; 
+export class Tab1Page {
 
-  constructor(private contatoService: ContatoService) {}
+  contatosAgrupados: { letra: string; contatos: Contato[] }[] = [];
+  todosContatos: Contato[] = []; // mantém todos os contatos
+  termoBusca: string = '';       // termo de busca
+  private chave_storage = 'lista_contatos';
 
-  async ngOnInit() {
+  constructor(private storage: Storage) {
+    this.iniciarStorage();
+  }
+
+  async iniciarStorage() {
+    await this.storage.create();
     this.carregarContatos();
   }
 
-  async ionViewWillEnter() {
+  ionViewWillEnter() {
     this.carregarContatos();
+  }
+
+  async carregarContatos() {
+    const contatos: Contato[] = await this.storage.get(this.chave_storage) || [];
+    this.todosContatos = contatos; // salva os contatos para filtro
+    this.agrupadosPorLetra(contatos);
   }
 
   filtrarContatos() {
-  const termo = this.termoBusca.toLowerCase();
+    const termo = this.termoBusca.toLowerCase();
+    const filtrados = this.todosContatos.filter(c =>
+      c.nome.toLowerCase().includes(termo)
+    );
+    this.agrupadosPorLetra(filtrados);
+  }
 
-  const contatosFiltrados = this.contatosOriginais.filter(contato =>
-    contato.nome.toLowerCase().includes(termo)
-  );
+  agrupadosPorLetra(contatos: Contato[]) {
+    contatos.sort((a, b) => a.nome.localeCompare(b.nome));
 
-  this.contatosAgrupados = this.agruparPorLetra(contatosFiltrados);
+    const agrupados: { [letra: string]: Contato[] } = {};
+
+    contatos.forEach(contato => {
+      const letra = contato.nome.charAt(0).toUpperCase();
+      if (!agrupados[letra]) {
+        agrupados[letra] = [];
+      }
+      agrupados[letra].push(contato);
+    });
+
+    this.contatosAgrupados = Object.keys(agrupados)
+      .sort()
+      .map(letra => ({
+        letra,
+        contatos: agrupados[letra]
+      }));
+  }
 }
 
-  async carregarContatos() {
-    this.contatosOriginais = await this.contatoService.listarContatos();
-    this.filtrarContatos();
-  }
-
-  alphabetical = (a: any, b: any): number => {
-    return a.key.localeCompare(b.key);
-  }
-
-  agruparPorLetra(contatos: any[]): { [letra: string]: any[] } {
-    const agrupados: { [letra: string]: any[] } = {};
-
-    contatos
-      .sort((a, b) => a.nome.localeCompare(b.nome))
-      .forEach(contato => {
-        const letra = contato.nome.charAt(0).toUpperCase();
-        if (!agrupados[letra]) {
-          agrupados[letra] = [];
-        }
-        agrupados[letra].push(contato);
-      });
-
-    return agrupados;
-  }
-
+class Contato {
+  nome!: string;
+  telefone!: string;
+  email!: string;
+  endereco = {
+    rua: '',
+    numero: '',
+    cidade: '',
+    estado: '',
+    pais: ''
+  };
 }
