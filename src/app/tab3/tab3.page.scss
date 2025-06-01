@@ -1,0 +1,26 @@
+ion-grid {
+  padding: 16px;
+}
+
+.fixed-button {
+  position: fixed;
+  left: 20px;
+  right: 20px;
+  --border-radius: 8px;
+  --background: #3880ff; 
+  --color: #fff;
+}
+
+.fixed-button.list {
+  bottom: 120px; 
+  --background: #666; 
+}
+
+.fixed-button.danger {
+  bottom: 70px; 
+  --background: #eb445a;
+}
+
+.fixed-button {
+  bottom: 20px; 
+}
