@@ -8,34 +8,46 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-list>
-    <ion-item>
-      <ion-input label="Nome" [(ngModel)]="contato.nome"></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-input label="Contato" type="tel" [(ngModel)]="contato.telefone"></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-input label="E-mail" type="email" [(ngModel)]="contato.email"></ion-input>
-    </ion-item>
-    <ion-accordion-group>
+  <form [formGroup]="perfilForm">
+    <ion-list>
+      <ion-item>
+        <ion-input label="Nome" formControlName="nome"></ion-input>
+      </ion-item>
+      <div class="erro" *ngIf="perfilForm.get('nome')?.touched && perfilForm.get('nome')?.invalid">
+        Nome é obrigatório.
+      </div>
+
+      <ion-item>
+        <ion-input label="Contato" type="tel" formControlName="telefone"></ion-input>
+      </ion-item>
+      <div class="erro" *ngIf="perfilForm.get('telefone')?.touched && perfilForm.get('telefone')?.invalid">
+        Telefone é obrigatório.
+      </div>
+
+      <ion-item>
+        <ion-input label="E-mail" type="email" formControlName="email"></ion-input>
+      </ion-item>
+      <div class="erro" *ngIf="perfilForm.get('email')?.touched && perfilForm.get('email')?.invalid">
+        E-mail é obrigatório e deve ser válido.
+      </div>
+
+      <ion-accordion-group>
         <ion-accordion value="endereco">
           <ion-item slot="header">
             <ion-label>Endereço</ion-label>
           </ion-item>
-          <div class="ion-padding" slot="content">
-            <ion-input label="Rua" [(ngModel)]="contato.endereco.rua"></ion-input>
-            <ion-input label="Número" type="number" [(ngModel)]="contato.endereco.numero"></ion-input>
-            <ion-input label="Cidade" [(ngModel)]="contato.endereco.cidade"></ion-input>
-            <ion-input label="Estado" [(ngModel)]="contato.endereco.estado"></ion-input>
-            <ion-input label="País" [(ngModel)]="contato.endereco.pais"></ion-input>
+          <div class="ion-padding" slot="content" [formGroup]="enderecoFormGroup">
+            <ion-input label="Rua" formControlName="rua"></ion-input>
+            <ion-input label="Número" type="number" formControlName="numero"></ion-input>
+            <ion-input label="Cidade" formControlName="cidade"></ion-input>
+            <ion-input label="Estado" formControlName="estado"></ion-input>
+            <ion-input label="País" formControlName="pais"></ion-input>
           </div>
         </ion-accordion>
-    </ion-accordion-group>
-    
-  </ion-list>
+      </ion-accordion-group>
+    </ion-list>
 
-  <ion-button expand="full" shape="round" class="botao-salvar" (click)="salvar()">Salvar</ion-button>
-  <ion-button expand="full" shape="round" class="botao-cancel" (click)="cancelar()">Cancelar</ion-button>
-  
+    <ion-button expand="full" shape="round" class="botao-salvar" (click)="salvar()">Salvar</ion-button>
+    <ion-button expand="full" shape="round" class="botao-cancel" (click)="cancelar()">Cancelar</ion-button>
+  </form>
 </ion-content>

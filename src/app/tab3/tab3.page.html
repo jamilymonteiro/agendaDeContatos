@@ -1,34 +1,90 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-title>Meu Perfil</ion-title>
+  <ion-toolbar color="dark">
+    <ion-title>Meu perfil</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <ion-grid>
-    <ion-row>
-      <ion-col>
-        <!-- Formulário de Perfil -->
-        <ion-item>
-          <ion-label position="floating">Nome</ion-label>
-          <ion-input [(ngModel)]="name" placeholder="Digite seu nome"></ion-input>
-        </ion-item>
+<ion-content class="ion-padding">
 
-        <ion-item>
-          <ion-label position="floating">E-mail</ion-label>
-          <ion-input [(ngModel)]="email" placeholder="Digite seu e-mail" type="email"></ion-input>
-        </ion-item>
+  <ng-container *ngIf="usuario && !mostrarFormulario">
+    <ion-list>
+      <ion-item lines="none">
+        <ion-label>
+          <h6>Nome</h6>
+          <p>{{ usuario.nome }}</p>
+        </ion-label>
+        <ion-avatar slot="end">
+          <img [src]="usuario.foto || 'assets/avatar-placeholder.png'" />
+        </ion-avatar>
+      </ion-item>
 
-        <ion-item>
-          <ion-label position="floating">Telefone</ion-label>
-          <ion-input [(ngModel)]="phone" placeholder="Digite seu telefone" type="tel"></ion-input>
-        </ion-item>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+      <ion-item lines="none">
+        <ion-label>
+          <h6>Celular</h6>
+          <p>{{ usuario.telefone }}</p>
+        </ion-label>
+      </ion-item>
 
-  <!-- Botões fixos -->
-  <ion-button class="fixed-button list" expand="block" color="medium" (click)="listProfiles()">Listar Perfis</ion-button>
-  <ion-button class="fixed-button danger" expand="block" color="danger" (click)="deleteProfile()">Excluir Perfil</ion-button>
-  <ion-button class="fixed-button" expand="block" color="primary" (click)="saveProfile()">Salvar Perfil</ion-button>
+      <ion-item lines="none">
+        <ion-label>
+          <h6>E-mail</h6>
+          <p>{{ usuario.email }}</p>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+
+    <ion-button expand="full" shape="round" color="dark" (click)="editar()">Editar perfil</ion-button>
+  </ng-container>
+
+  <ng-container *ngIf="!usuario && !mostrarFormulario">
+    <ion-item>
+      <ion-label>Nenhum perfil cadastrado.</ion-label>
+    </ion-item>
+    <ion-button expand="full" shape="round" color="dark" (click)="mostrarFormulario = true">Cadastrar perfil</ion-button>
+  </ng-container>
+
+  <!-- Formulário reativo -->
+  <form *ngIf="mostrarFormulario" [formGroup]="perfilForm" (ngSubmit)="salvarPerfil()">
+    <ion-list>
+      <ion-item>
+        <ion-input label="Nome" formControlName="nome" type="text"></ion-input>
+      </ion-item>
+      <div class="erro" *ngIf="perfilForm.get('nome')?.touched && perfilForm.get('nome')?.invalid">
+        Nome é obrigatório.
+      </div>
+
+      <ion-item>
+        <ion-input label="Celular" formControlName="telefone" type="tel"></ion-input>
+      </ion-item>
+      <div class="erro" *ngIf="perfilForm.get('telefone')?.touched && perfilForm.get('telefone')?.invalid">
+        Celular é obrigatório.
+      </div>
+
+      <ion-item>
+        <ion-input label="E-mail" formControlName="email" type="email"></ion-input>
+      </ion-item>
+      <div class="erro" *ngIf="perfilForm.get('email')?.touched && perfilForm.get('email')?.invalid">
+        Informe um e-mail válido.
+      </div>
+
+      <ion-item>
+        <ion-label position="stacked">Foto</ion-label>
+        <input type="file" accept="image/*" (change)="selecionarFoto($event)" />
+      </ion-item>
+      <ion-item *ngIf="perfilForm.value.foto" lines="none" style="justify-content:center;">
+        <ion-avatar>
+          <img [src]="perfilForm.value.foto" />
+        </ion-avatar>
+      </ion-item>
+    </ion-list>
+
+    <ion-button expand="full" shape="round" class="botao-salvar" type="submit" [disabled]="perfilForm.invalid">
+      {{ editando ? 'Salvar alterações' : 'Cadastrar' }}
+    </ion-button>
+
+    <ion-button expand="full" shape="round" class="botao-cancel" type="button" (click)="cancelar()">
+      Cancelar
+    </ion-button>
+  </form>
+
 </ion-content>

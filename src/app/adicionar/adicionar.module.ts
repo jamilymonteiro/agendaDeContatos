@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { AdicionarPageRoutingModule } from './adicionar-routing.module';
 import { AdicionarPage } from './adicionar.page';
@@ -9,6 +9,7 @@ import { AdicionarPage } from './adicionar.page';
   imports: [
     CommonModule,
     FormsModule,
+    ReactiveFormsModule,
     IonicModule,
     AdicionarPageRoutingModule
   ],

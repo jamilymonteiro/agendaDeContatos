@@ -1,26 +1,20 @@
-ion-grid {
-  padding: 16px;
+ion-card-content img {
+  margin-bottom: 10px;
 }
 
-.fixed-button {
-  position: fixed;
-  left: 20px;
-  right: 20px;
-  --border-radius: 8px;
-  --background: #3880ff; 
-  --color: #fff;
+.erro {
+  color: #e74c3c;
+  font-size: 0.9em;
+  margin-left: 15px;
+  margin-bottom: 8px;
 }
 
-.fixed-button.list {
-  bottom: 120px; 
-  --background: #666; 
+.botao-salvar {
+    --background: #28a745;
+    --color: white;
 }
 
-.fixed-button.danger {
-  bottom: 70px; 
-  --background: #eb445a;
-}
-
-.fixed-button {
-  bottom: 20px; 
+.botao-cancel{
+    --background: #dc3545;
+    --color: white;
 }
