@@ -1,6 +1,6 @@
-
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { Storage } from '@ionic/storage-angular';
 
 @Injectable({
   providedIn: 'root'
@@ -8,19 +8,32 @@ import { BehaviorSubject } from 'rxjs';
 export class ContatosFavoritosService {
   private favoritosSubject = new BehaviorSubject<any[]>([]);
   favoritos$ = this.favoritosSubject.asObservable();
+  private chave = 'contatos_favoritos';
 
-  constructor() {}
+  constructor(private storage: Storage) {
+    this.init();
+  }
 
-  adicionarFavorito(contato: any) {
+  private async init() {
+    await this.storage.create();
+    const salvos = await this.storage.get(this.chave);
+    this.favoritosSubject.next(salvos || []);
+  }
+
+  async adicionarFavorito(contato: any) {
     const favoritosAtuais = this.favoritosSubject.value;
     if (!favoritosAtuais.some(f => f.nome === contato.nome)) {
-      this.favoritosSubject.next([...favoritosAtuais, contato]);
+      const atualizados = [...favoritosAtuais, contato];
+      this.favoritosSubject.next(atualizados);
+      await this.storage.set(this.chave, atualizados);
     }
   }
 
-  removerFavorito(nome: string) {
+  async removerFavorito(nome: string) {
     const favoritosAtuais = this.favoritosSubject.value;
-    this.favoritosSubject.next(favoritosAtuais.filter(f => f.nome !== nome));
+    const atualizados = favoritosAtuais.filter(f => f.nome !== nome);
+    this.favoritosSubject.next(atualizados);
+    await this.storage.set(this.chave, atualizados);
   }
 
   getFavoritos() {

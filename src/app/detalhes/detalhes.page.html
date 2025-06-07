@@ -1,0 +1,51 @@
+<ion-header>
+  <ion-toolbar class="titulo-preto">
+    <ion-title>Detalhes</ion-title>
+  </ion-toolbar>
+
+  <ion-toolbar class="toolbar-branca">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/tab1"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <div class="info-box">
+    <p><strong>Nome</strong><br>{{ contato.nome }}</p>
+    <p><strong>Celular</strong><br>{{ contato.telefone }}</p>
+    <p><strong>E-mail</strong><br>{{ contato.email }}</p>
+    <p><strong>Endereço</strong><br>
+      {{ contato.endereco.rua }}, {{ contato.endereco.numero }},
+      {{ contato.endereco.cidade }}, {{ contato.endereco.estado }}
+    </p>
+  </div>
+
+
+  <ion-grid class="botoes-acao">
+    <ion-row class="ion-justify-content-around ion-align-items-end">
+      <ion-col size="3" class="ion-text-center">
+        <ion-button color="danger" shape="round" fill="solid" (click)="favoritarContato()">
+          <ion-icon name="heart" slot="icon-only"></ion-icon>
+        </ion-button>
+        <div class="label-acao">Favoritos</div>
+      </ion-col>
+
+      <ion-col size="3" class="ion-text-center">
+        <ion-button color="primary" shape="round" fill="solid" (click)="editarContato()">
+          <ion-icon name="create" slot="icon-only"></ion-icon>
+        </ion-button>
+        <div class="label-acao">Editar</div>
+      </ion-col>
+
+      <ion-col size="3" class="ion-text-center">
+        <ion-button shape="round" fill="solid" class="btn-lixeira" (click)="excluirContato()">
+          <ion-icon name="trash" slot="icon-only"></ion-icon>
+        </ion-button>
+        <div class="label-acao">Excluir</div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+</ion-content>

@@ -12,6 +12,7 @@ import { Storage } from '@ionic/storage-angular';
 export class AdicionarPage {
   perfilForm: FormGroup;
   private chave_storage = 'lista_contatos';
+  contatoOriginal: any = null;
 
   constructor(
     private router: Router,
@@ -32,10 +33,20 @@ export class AdicionarPage {
     });
 
     this.iniciarStorage();
+
+    const nav = this.router.getCurrentNavigation();
+    if (nav?.extras?.state?.['contato']) {
+      this.contatoOriginal = nav.extras.state['contato'];
+      this.preencherFormulario(this.contatoOriginal);
+    }
   }
 
   async iniciarStorage() {
-    this.storage = await this.storage.create();
+    await this.storage.create();
+  }
+
+  preencherFormulario(contato: any) {
+    this.perfilForm.patchValue(contato);
   }
 
   async salvar() {
@@ -44,10 +55,19 @@ export class AdicionarPage {
       return;
     }
 
-    const contato = this.perfilForm.value;
+    const contatoEditado = this.perfilForm.value;
+    let contatos: any[] = await this.storage.get(this.chave_storage) || [];
 
-    const contatos: any[] = await this.storage.get(this.chave_storage) || [];
-    contatos.push(contato);
+    if (this.contatoOriginal) {
+    
+      const index = contatos.findIndex(c => c.nome === this.contatoOriginal.nome);
+      if (index > -1) {
+        contatos[index] = contatoEditado;
+      }
+    } else {
+      
+      contatos.push(contatoEditado);
+    }
 
     await this.storage.set(this.chave_storage, contatos);
     this.perfilForm.reset();
@@ -57,6 +77,7 @@ export class AdicionarPage {
   cancelar() {
     this.router.navigate(['/tabs/tab1']);
   }
+
   get enderecoFormGroup(): FormGroup {
     return this.perfilForm.get('endereco') as FormGroup;
   }

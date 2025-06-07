@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Storage } from '@ionic/storage-angular';
+import { Router, NavigationExtras } from '@angular/router';
 
 @Component({
   selector: 'app-tab1',
@@ -8,13 +9,12 @@ import { Storage } from '@ionic/storage-angular';
   standalone: false
 })
 export class Tab1Page {
-
   contatosAgrupados: { letra: string; contatos: Contato[] }[] = [];
-  todosContatos: Contato[] = []; // mantém todos os contatos
-  termoBusca: string = '';       // termo de busca
+  todosContatos: Contato[] = [];
+  termoBusca: string = '';
   private chave_storage = 'lista_contatos';
 
-  constructor(private storage: Storage) {
+  constructor(private storage: Storage, private router: Router) {
     this.iniciarStorage();
   }
 
@@ -29,7 +29,7 @@ export class Tab1Page {
 
   async carregarContatos() {
     const contatos: Contato[] = await this.storage.get(this.chave_storage) || [];
-    this.todosContatos = contatos; // salva os contatos para filtro
+    this.todosContatos = contatos;
     this.agrupadosPorLetra(contatos);
   }
 
@@ -60,6 +60,17 @@ export class Tab1Page {
         letra,
         contatos: agrupados[letra]
       }));
+  }
+
+  verDetalhes(contato: Contato) {
+    const navigationExtras: NavigationExtras = {
+      state: {
+        contato: contato
+      }
+    };
+    
+    this.router.navigate(['/detalhes'], navigationExtras);
+
   }
 }
 

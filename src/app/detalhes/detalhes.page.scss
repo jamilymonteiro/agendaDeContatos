@@ -1,0 +1,52 @@
+.titulo-preto {
+  --background: #000;
+  --color: #fff;
+}
+
+.toolbar-branca {
+  --background: #fff;
+  --color: #000;
+}
+
+ion-content {
+  --background: #ffffff;
+  color: #000;
+}
+
+.info-box {
+  background: transparent;
+  font-size: 16px;
+  padding: 16px;
+  margin-bottom: 80px;
+}
+
+.info-box p {
+  margin-bottom: 18px;
+  color: #000;
+}
+
+
+.botoes-acao {
+  position: absolute;
+  bottom: 20px;
+  width: 100%;
+}
+
+ion-button {
+  width: 56px;
+  height: 56px;
+  --border-radius: 50%;
+  --box-shadow: none;
+}
+
+.label-acao {
+  margin-top: 8px;
+  font-size: 14px;
+  color: #000;
+}
+
+
+.btn-lixeira {
+  --background: #000;
+  --color: #fff;
+}

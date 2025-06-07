@@ -7,6 +7,7 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
+
     <ion-searchbar
       placeholder="Buscar contato..."
       [(ngModel)]="termoBusca"
@@ -21,7 +22,7 @@
       <ion-label><strong>{{ grupo.letra }}</strong></ion-label>
     </ion-item-divider>
 
-    <ion-item *ngFor="let contato of grupo.contatos">
+    <ion-item *ngFor="let contato of grupo.contatos" (click)="verDetalhes(contato)">
       <ion-label>
         <h2>{{ contato.nome }}</h2>
       </ion-label>
