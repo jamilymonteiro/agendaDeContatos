@@ -6,6 +6,10 @@ const routes: Routes = [
     path: '',
     loadChildren: () => import('./tabs/tabs.module').then(m => m.TabsPageModule)
   },
+  {
+    path: 'adicionar', // <-- Rota fora de /tabs
+    loadChildren: () => import('./adicionar/adicionar.module').then(m => m.AdicionarPageModule)
+  },
 ];
 @NgModule({
   imports: [
