@@ -1,7 +1,5 @@
 import { Component } from '@angular/core';
 import { Storage } from '@ionic/storage-angular';
-import { Router, NavigationEnd } from '@angular/router';
-import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-tab1',
@@ -16,17 +14,8 @@ export class Tab1Page {
   termoBusca: string = '';       // termo de busca
   private chave_storage = 'lista_contatos';
 
-  constructor(private storage: Storage, private router: Router) {
+  constructor(private storage: Storage) {
     this.iniciarStorage();
-
-    // Detecta quando retorna para a rota /tabs/tab1
-  this.router.events
-    .pipe(filter(event => event instanceof NavigationEnd))
-    .subscribe((event: any) => {
-      if (event.urlAfterRedirects === '/tabs/tab1') {
-        this.carregarContatos();
-      }
-    });
   }
 
   async iniciarStorage() {
