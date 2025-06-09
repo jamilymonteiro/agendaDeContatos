@@ -1,24 +1,16 @@
 <ion-header>
-  <!-- Título em barra preta -->
-  <ion-toolbar class="titulo-preto">
+  <ion-toolbar color="dark">
     <ion-title>Contatos Favoritos</ion-title>
-  </ion-toolbar>
-
-  <!-- Botão de voltar em barra branca -->
-  <ion-toolbar class="toolbar-branca">
-    <ion-buttons slot="start">
-      <ion-back-button defaultHref="/tabs/tab1"></ion-back-button>
-    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
-
 <ion-content class="ion-padding" color="Dark">
   <ion-list>
-    <ion-item *ngFor="let contato of favoritos">
+    <ion-item *ngFor="let contato of favoritos" (click)="abrirDetalhes(contato)">
       <ion-label>{{ contato.nome }}</ion-label>
-      <ion-button slot="end" fill="clear" (click)="removerFavorito(contato.nome)">
+      <ion-button slot="end" fill="clear" (click)="removerFavorito(contato.nome); $event.stopPropagation()">
+      <!-- O uso de $event.stopPropagation() dentro do botão de remover 
+       evita que o clique no botão também dispare a abertura da página de detalhes.--> 
         <ion-icon name="heart" color="danger"></ion-icon>
       </ion-button>
     </ion-item>

@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar color="dark">
-    <ion-title>Meu perfil</ion-title>
+    <ion-title>Meu Perfil</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -33,7 +33,23 @@
       </ion-item>
     </ion-list>
 
-    <ion-button expand="full" shape="round" color="dark" (click)="editar()">Editar perfil</ion-button>
+    <ion-grid class="botoes-acao">
+    <ion-row class="ion-justify-content-around ion-align-items-end">
+      <ion-col size="3" class="ion-text-center">
+        <ion-button class="editperfil" color="primary" shape="round" fill="solid" (click)="editar()">
+          <ion-icon name="create" slot="icon-only"></ion-icon>
+        </ion-button>
+        <div class="label-acao">Editar perfil</div>
+      </ion-col>
+
+      <ion-col size="3" class="ion-text-center">
+        <ion-button class="editperfil" color="danger" shape="round" fill="solid" (click)="excluir()">
+          <ion-icon name="trash" slot="icon-only"></ion-icon>
+        </ion-button>
+        <div class="label-acao">Excluir</div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
   </ng-container>
 
   <ng-container *ngIf="!usuario && !mostrarFormulario">

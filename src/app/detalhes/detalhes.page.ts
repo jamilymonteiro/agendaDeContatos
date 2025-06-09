@@ -35,7 +35,6 @@ export class DetalhesPage {
       await this.favoritosService.adicionarFavorito(this.contato);
       this.contato.favorito = true;
 
-      
       this.router.navigate(['/tabs/tab2']);
     }
 
@@ -49,7 +48,7 @@ export class DetalhesPage {
   }
 
   editarContato() {
-    this.router.navigate(['/tabs/adicionar'], {
+    this.router.navigate(['/adicionar'], {
       state: { contato: this.contato }
     });
   }

@@ -1,6 +1,9 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Storage } from '@ionic/storage-angular';
+import { ActivatedRoute } from '@angular/router';
+import { AlertController } from '@ionic/angular';
+
 
 @Component({
   selector: 'app-tab3',
@@ -14,7 +17,12 @@ export class Tab3Page {
   mostrarFormulario = false;
   editando = false;
 
-  constructor(private fb: FormBuilder, private storage: Storage) {
+  constructor(
+    private fb: FormBuilder,
+    private storage: Storage,
+    private route: ActivatedRoute,
+    private alertController: AlertController
+  ) {
     this.perfilForm = this.fb.group({
       nome: ['', Validators.required],
       telefone: ['', Validators.required],
@@ -29,6 +37,13 @@ export class Tab3Page {
     if (dados) {
       this.usuario = dados;
     }
+
+    // Verifica se a URL tem ?editar=true
+    this.route.queryParams.subscribe(params => {
+      if (params['editar']) {
+        this.editar();
+      }
+    });
   }
 
   selecionarFoto(event: any) {
@@ -67,7 +82,6 @@ export class Tab3Page {
     this.editando = true;
     this.mostrarFormulario = true;
 
-    // Patch para preencher os campos do formulário com os dados do usuário
     this.perfilForm.patchValue({
       nome: this.usuario.nome || '',
       telefone: this.usuario.telefone || '',
@@ -75,4 +89,29 @@ export class Tab3Page {
       foto: this.usuario.foto || '',
     });
   }
+
+  async excluir() {
+  const alerta = await this.alertController.create({
+    header: 'Confirmar',
+    message: 'Tem certeza que deseja excluir o perfil?',
+    buttons: [
+      {
+        text: 'Cancelar',
+        role: 'cancel'
+      },
+      {
+        text: 'Excluir',
+        handler: async () => {
+          await this.storage.remove('perfil');
+          this.usuario = null;
+          this.perfilForm.reset();
+          this.mostrarFormulario = false;
+          this.editando = false;
+        }
+      }
+    ]
+  });
+
+  await alerta.present();
+} 
 }
