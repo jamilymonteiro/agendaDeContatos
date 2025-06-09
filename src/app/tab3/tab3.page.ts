@@ -37,13 +37,6 @@ export class Tab3Page {
     if (dados) {
       this.usuario = dados;
     }
-
-    // Verifica se a URL tem ?editar=true
-    this.route.queryParams.subscribe(params => {
-      if (params['editar']) {
-        this.editar();
-      }
-    });
   }
 
   selecionarFoto(event: any) {
