@@ -67,27 +67,31 @@ async favoritarContato() {
   }
 
   async excluirContato() {
-    const alerta = await this.alertCtrl.create({
-      header: 'Confirmar',
-      message: 'Tem certeza que deseja excluir este contato?',
-      buttons: [
-        {
-          text: 'Cancelar',
-          role: 'cancel'
-        },
-        {
-          text: 'Excluir',
-          handler: async () => {
-            // Remove o contato da lista e atualiza o Storage
-            const contatos = await this.storage.get(this.chave_storage) || [];
-            const atualizados = contatos.filter((c: any) => c.nome !== this.contato.nome);
-            await this.storage.set(this.chave_storage, atualizados);
-            this.navCtrl.back();
-          }
-        }
-      ]
-    });
+  const alerta = await this.alertCtrl.create({
+    header: 'Confirmar',
+    message: 'Tem certeza que deseja excluir este contato?',
+    buttons: [
+      {
+        text: 'Cancelar',
+        role: 'cancel'
+      },
+      {
+        text: 'Excluir',
+        handler: async () => {
+          // Remove o contato da lista e atualiza o Storage
+          const contatos = await this.storage.get(this.chave_storage) || [];
+          const atualizados = contatos.filter((c: any) => c.nome !== this.contato.nome);
+          await this.storage.set(this.chave_storage, atualizados);
 
-    await alerta.present();
-  }
+          // Também remove dos favoritos (caso esteja lá)
+          await this.favoritosService.removerFavorito(this.contato.nome);
+
+          this.navCtrl.back();
+        }
+      }
+    ]
+  });
+
+  await alerta.present();
+}
 }
