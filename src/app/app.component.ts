@@ -17,6 +17,7 @@ export class AppComponent {
     private storage: Storage,
     private router: Router
   ) {
+    // Escuta eventos de navegação para atualizar o perfil sempre que a rota muda
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         this.atualizarPerfil();
@@ -24,15 +25,18 @@ export class AppComponent {
     });
   }
 
+  // Função de ciclo de vida que roda ao iniciar o app
   async ngOnInit() {
     await this.storage.create();
     this.usuario = await this.storage.get('perfil');
   }
 
+  // Recarrega os dados do perfil do armazenamento
   async atualizarPerfil() {
     this.usuario = await this.storage.get('perfil');
   }
 
+  // Navega para a tela de perfil (tab3) com o parâmetro de edição
   abrirPerfil() {
     this.navCtrl.navigateRoot(['/tabs/tab3'], {
       queryParams: { editar: true }

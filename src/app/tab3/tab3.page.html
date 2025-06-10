@@ -6,6 +6,7 @@
 
 <ion-content class="ion-padding">
 
+  <!-- Exibe os dados do usuário quando existe um perfil cadastrado e o formulário não está visível -->
   <ng-container *ngIf="usuario && !mostrarFormulario">
     <ion-list>
       <ion-item lines="none">
@@ -52,6 +53,7 @@
   </ion-grid>
   </ng-container>
 
+  <!-- Caso não tenha perfil cadastrado e formulário não esteja visível, mostra mensagem e botão para cadastrar -->
   <ng-container *ngIf="!usuario && !mostrarFormulario">
     <ion-item>
       <ion-label>Nenhum perfil cadastrado.</ion-label>
@@ -59,7 +61,7 @@
     <ion-button expand="full" shape="round" color="dark" (click)="mostrarFormulario = true">Cadastrar perfil</ion-button>
   </ng-container>
 
-  <!-- Formulário reativo -->
+<!-- Formulário para cadastro/edição do perfil, exibido quando mostrarFormulario = true -->
   <form *ngIf="mostrarFormulario" [formGroup]="perfilForm" (ngSubmit)="salvarPerfil()">
     <ion-list>
       <ion-item>
@@ -87,6 +89,7 @@
         <ion-label position="stacked">Foto</ion-label>
         <input type="file" accept="image/*" (change)="selecionarFoto($event)" />
       </ion-item>
+      <!-- Exibe a pré-visualização da foto selecionada, se houver -->
       <ion-item *ngIf="perfilForm.value.foto" lines="none" style="justify-content:center;">
         <ion-avatar>
           <img [src]="perfilForm.value.foto" />

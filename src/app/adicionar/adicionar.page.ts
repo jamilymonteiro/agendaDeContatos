@@ -1,3 +1,4 @@
+// Importações para criar o componente, formulário, navegação e armazenamento
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -10,8 +11,11 @@ import { Storage } from '@ionic/storage-angular';
   standalone: false
 })
 export class AdicionarPage {
+  // Declaração do formulário principal do contato
   perfilForm: FormGroup;
+  // Chave usada para armazenar os dados no Ionic Storage
   private chave_storage = 'lista_contatos';
+  // Contato original (usado para edição)
   contatoOriginal: any = null;
 
   constructor(
@@ -19,6 +23,7 @@ export class AdicionarPage {
     private storage: Storage,
     private fb: FormBuilder
   ) {
+    // Inicializa o formulário com validações
     this.perfilForm = this.fb.group({
       nome: ['', Validators.required],
       telefone: ['', Validators.required],
@@ -34,10 +39,11 @@ export class AdicionarPage {
 
     this.iniciarStorage();
 
+    // Verifica se a navegação para esta página trouxe um contato (edição)
     const nav = this.router.getCurrentNavigation();
     if (nav?.extras?.state?.['contato']) {
       this.contatoOriginal = nav.extras.state['contato'];
-      this.preencherFormulario(this.contatoOriginal);
+      this.preencherFormulario(this.contatoOriginal); //Preenche o formulário com os dados do contato existente
     }
   }
 
@@ -45,39 +51,46 @@ export class AdicionarPage {
     await this.storage.create();
   }
 
+  // Preenche os campos do formulário com os dados do contato recebido
   preencherFormulario(contato: any) {
     this.perfilForm.patchValue(contato);
   }
 
+  // Função chamada ao clicar em "Salvar"
   async salvar() {
+    // Verifica se o formulário está inválido
     if (this.perfilForm.invalid) {
-      this.perfilForm.markAllAsTouched();
+      this.perfilForm.markAllAsTouched(); // Marca todos os campos como tocados para exibir erros
       return;
     }
 
     const contatoEditado = this.perfilForm.value;
+    // Busca a lista atual de contatos no Storage (ou inicia vazia):
     let contatos: any[] = await this.storage.get(this.chave_storage) || [];
 
     if (this.contatoOriginal) {
-    
+      // Edição: encontra o índice do contato original e substitui pelo novo
       const index = contatos.findIndex(c => c.nome === this.contatoOriginal.nome);
       if (index > -1) {
         contatos[index] = contatoEditado;
       }
     } else {
-      
+      // Novo contato: adiciona à lista:
       contatos.push(contatoEditado);
     }
-
+    // Salva a lista atualizada no Storage:
     await this.storage.set(this.chave_storage, contatos);
+    // Limpa o formulário após salvar e volta para tab1
     this.perfilForm.reset();
     this.router.navigate(['/tabs/tab1']);
   }
 
+  // Função chamada ao clicar em "Cancelar"
   cancelar() {
     this.router.navigate(['/tabs/tab1']);
   }
 
+  // Getter para facilitar o acesso ao FormGroup de endereço no HTML
   get enderecoFormGroup(): FormGroup {
     return this.perfilForm.get('endereco') as FormGroup;
   }

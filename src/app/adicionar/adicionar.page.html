@@ -17,6 +17,7 @@
       <ion-item>
         <ion-input label="Nome" formControlName="nome"></ion-input>
       </ion-item>
+      <!-- Mensagem de erro se o campo nome for inválido após ser tocado -->
       <div class="erro" *ngIf="perfilForm.get('nome')?.touched && perfilForm.get('nome')?.invalid">
         Nome é obrigatório.
       </div>
@@ -24,6 +25,7 @@
       <ion-item>
         <ion-input label="Contato" type="tel" formControlName="telefone"></ion-input>
       </ion-item>
+      <!-- Mensagem de erro para o telefone -->
       <div class="erro" *ngIf="perfilForm.get('telefone')?.touched && perfilForm.get('telefone')?.invalid">
         Telefone é obrigatório.
       </div>
@@ -31,6 +33,7 @@
       <ion-item>
         <ion-input label="E-mail" type="email" formControlName="email"></ion-input>
       </ion-item>
+       <!-- Mensagem de erro se o e-mail for inválido -->
       <div class="erro" *ngIf="perfilForm.get('email')?.touched && perfilForm.get('email')?.invalid">
         E-mail é obrigatório e deve ser válido.
       </div>
