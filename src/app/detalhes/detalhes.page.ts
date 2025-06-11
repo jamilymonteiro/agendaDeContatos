@@ -85,7 +85,7 @@ async favoritarContato() {
           await this.storage.set(this.chave_storage, atualizados);
 
           // Também remove dos favoritos (caso esteja lá)
-          await this.favoritosService.removerFavorito(this.contato.nome);
+          await this.favoritosService.removerFavorito(this.contato.nome, false);
 
           // Mostra o toast de confirmação
           const toast = await this.toastCtrl.create({

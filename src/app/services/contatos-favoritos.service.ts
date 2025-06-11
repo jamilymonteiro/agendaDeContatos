@@ -34,13 +34,16 @@ export class ContatosFavoritosService {
     }
   }
 
-  async removerFavorito(nome: string) {
-    const favoritosAtuais = this.favoritosSubject.value;
-    const atualizados = favoritosAtuais.filter(f => f.nome !== nome);
-    this.favoritosSubject.next(atualizados);
-    await this.storage.set(this.chave, atualizados);
+  async removerFavorito(nome: string, mostrarToast: boolean = true) {
+  const favoritosAtuais = this.favoritosSubject.value;
+  const atualizados = favoritosAtuais.filter(f => f.nome !== nome);
+  this.favoritosSubject.next(atualizados);
+  await this.storage.set(this.chave, atualizados);
+
+  if (mostrarToast) {
     this.exibirToast(`Contato "${nome}" removido dos favoritos.`, 'warning');
   }
+}
 
   getFavoritos() {
     return this.favoritosSubject.value;
