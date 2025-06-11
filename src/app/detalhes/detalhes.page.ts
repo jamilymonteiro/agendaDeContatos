@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { Storage } from '@ionic/storage-angular';
-import { AlertController, NavController } from '@ionic/angular';
+import { AlertController, NavController, ToastController  } from '@ionic/angular';
 import { ContatosFavoritosService } from 'src/app/services/contatos-favoritos.service';
 
 @Component({
@@ -21,7 +21,8 @@ export class DetalhesPage {
     private storage: Storage,
     private alertCtrl: AlertController,
     private navCtrl: NavController,
-    private favoritosService: ContatosFavoritosService
+    private favoritosService: ContatosFavoritosService,
+    private toastCtrl: ToastController
   ) {
     // Verifica se foi passado um contato pela navegação (ao vir da tela anterior):
     const nav = this.router.getCurrentNavigation();
@@ -86,6 +87,16 @@ async favoritarContato() {
           // Também remove dos favoritos (caso esteja lá)
           await this.favoritosService.removerFavorito(this.contato.nome);
 
+          // Mostra o toast de confirmação
+          const toast = await this.toastCtrl.create({
+            message: 'Contato excluído com sucesso!',
+            duration: 2000,
+            color: 'danger',
+            position: 'bottom'
+          });
+          await toast.present();
+
+          // Volta para a tela anterior
           this.navCtrl.back();
         }
       }
