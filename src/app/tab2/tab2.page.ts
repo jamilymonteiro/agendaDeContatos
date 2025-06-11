@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ContatosFavoritosService } from 'src/app/services/contatos-favoritos.service';
 import { Router } from '@angular/router';
-
+import { ToastController } from '@ionic/angular';
 
 @Component({
   selector: 'app-tab2',
@@ -12,7 +12,9 @@ import { Router } from '@angular/router';
 export class Tab2Page implements OnInit {
   favoritos: any[] = [];
 
-  constructor(private favoritosService: ContatosFavoritosService, private router: Router) {} // Serviço para gerenciar contatos favoritos
+  constructor(private favoritosService: ContatosFavoritosService,
+     private router: Router,
+     private toastController: ToastController) {} // Serviço para gerenciar contatos favoritos
 
   ngOnInit() {
     // Inscreve-se no observable do serviço para receber atualizações da lista de favoritos
@@ -32,4 +34,14 @@ export class Tab2Page implements OnInit {
   removerFavorito(nome: string) {
     this.favoritosService.removerFavorito(nome);
   }
-}
+    async exibirToast(mensagem: string) {
+      const toast = await this.toastController.create({
+        message: mensagem,
+        duration: 2000,
+        position: 'top',
+        color: 'warning' // Você pode mudar para 'success', 'danger', etc.
+      });
+      toast.present();
+    }
+  }
+
