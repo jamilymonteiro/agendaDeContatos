@@ -17,9 +17,8 @@ export class Tab2Page implements OnInit {
      private toastController: ToastController) {} // Serviço para gerenciar contatos favoritos
 
   ngOnInit() {
-    // Inscreve-se no observable do serviço para receber atualizações da lista de favoritos
-    this.favoritosService.favoritos$.subscribe((favoritos: any[]) => {
-      this.favoritos = favoritos; // Atualiza a lista local sempre que os favoritos mudam
+    this.favoritosService.favoritos$.subscribe(lista => {
+      this.favoritos = lista.sort((a, b) => a.nome.localeCompare(b.nome));
     });
   }
 
@@ -31,15 +30,15 @@ export class Tab2Page implements OnInit {
   }
 
   // Chama o serviço para remover um contato da lista de favoritos pelo nome
-  removerFavorito(nome: string) {
-    this.favoritosService.removerFavorito(nome);
+  removerFavorito(id: number) {
+    this.favoritosService.removerFavorito(id);
   }
     async exibirToast(mensagem: string) {
       const toast = await this.toastController.create({
         message: mensagem,
         duration: 2000,
         position: 'top',
-        color: 'medium' // Você pode mudar para 'success', 'danger', etc.
+        color: 'medium' 
       });
       toast.present();
     }

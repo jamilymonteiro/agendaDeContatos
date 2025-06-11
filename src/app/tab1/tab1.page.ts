@@ -93,6 +93,7 @@ export class Tab1Page {
 }
 
 class Contato {
+  id!: number;
   nome!: string;
   telefone!: string;
   email!: string;

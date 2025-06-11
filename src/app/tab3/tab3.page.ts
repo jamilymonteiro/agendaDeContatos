@@ -72,7 +72,7 @@ export class Tab3Page {
   message: 'Perfil salvo com sucesso!',
   duration: 2000,
   color: 'medium',
-  position: 'bottom'
+  position: 'top'
 });
   await toast.present();
 }

@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Storage } from '@ionic/storage-angular';
 import { ToastController } from '@ionic/angular';
+import { ContatosFavoritosService } from '../services/contatos-favoritos.service';
 
 
 @Component({
@@ -24,7 +25,8 @@ export class AdicionarPage {
     private router: Router,
     private storage: Storage,
     private fb: FormBuilder,
-    private toastCtrl: ToastController
+    private toastCtrl: ToastController,
+    private favoritosService: ContatosFavoritosService
   ) {
     // Inicializa o formulário com validações
     this.perfilForm = this.fb.group({
@@ -61,42 +63,54 @@ export class AdicionarPage {
 
   // Função chamada ao clicar em "Salvar"
   async salvar() {
-    // Verifica se o formulário está inválido
-    if (this.perfilForm.invalid) {
-      this.perfilForm.markAllAsTouched(); // Marca todos os campos como tocados para exibir erros
-      return;
-    }
-
-    const contatoEditado = this.perfilForm.value;
-    // Busca a lista atual de contatos no Storage (ou inicia vazia):
-    let contatos: any[] = await this.storage.get(this.chave_storage) || [];
-
-    if (this.contatoOriginal) {
-      // Edição: encontra o índice do contato original e substitui pelo novo
-      const index = contatos.findIndex(c => c.nome === this.contatoOriginal.nome);
-      if (index > -1) {
-        contatos[index] = contatoEditado;
-      }
-    } else {
-      // Novo contato: adiciona à lista:
-      contatos.push(contatoEditado);
-    }
-    // Salva a lista atualizada no Storage:
-    await this.storage.set(this.chave_storage, contatos);
-
-    // Exibe o toast de confirmação
-    const toast = await this.toastCtrl.create({
-      message: this.contatoOriginal ? 'Contato atualizado com sucesso!' : 'Contato salvo com sucesso!',
-      duration: 2000, // duração em ms
-      color: 'medium',
-      position: 'bottom' // pode ser 'top', 'middle' ou 'bottom'
-    });
-    await toast.present();
-
-    // Após o toast, limpa o formulário e navega
-    this.perfilForm.reset();
-    this.router.navigate(['/tabs/tab1']);
+  if (this.perfilForm.invalid) {
+    this.perfilForm.markAllAsTouched();
+    return;
   }
+
+  const contatoEditado = this.perfilForm.value;
+
+  let contatos: any[] = await this.storage.get(this.chave_storage) || [];
+
+  if (this.contatoOriginal) {
+    // Edição: atualiza o contato existente pelo ID
+    const index = contatos.findIndex(c => c.id === this.contatoOriginal.id);
+    if (index > -1) {
+      contatoEditado.id = this.contatoOriginal.id; // mantém o ID original
+      contatos[index] = contatoEditado;
+    }
+  } else {
+    // Novo contato: gera um ID único
+    const novoId = Date.now(); // simples gerador baseado no tempo
+    contatoEditado.id = novoId;
+    contatos.push(contatoEditado);
+  }
+
+  await this.storage.set(this.chave_storage, contatos); // ← SALVA os contatos atualizados
+
+  // Atualizar também nos favoritos se for edição
+  if (this.contatoOriginal) {
+    const favoritosAtuais = await this.storage.get('contatos_favoritos') || [];
+    const indexFavorito = favoritosAtuais.findIndex((f: any) => f.id === this.contatoOriginal.id);
+    if (indexFavorito > -1) {
+      favoritosAtuais[indexFavorito] = contatoEditado;
+      await this.storage.set('contatos_favoritos', favoritosAtuais);
+      this.favoritosService.atualizarListaFavoritos(favoritosAtuais); // Atualiza o BehaviorSubject
+    }
+  }
+
+  // Mensagem e redirecionamento
+  const toast = await this.toastCtrl.create({
+    message: this.contatoOriginal ? 'Contato atualizado com sucesso!' : 'Contato salvo com sucesso!',
+    duration: 2000,
+    color: 'medium',
+    position: 'top'
+  });
+  await toast.present();
+
+  this.perfilForm.reset();
+  this.router.navigate(['/tabs/tab1']);
+}
 
   // Função chamada ao clicar em "Cancelar"
   cancelar() {

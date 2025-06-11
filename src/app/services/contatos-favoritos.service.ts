@@ -24,26 +24,40 @@ export class ContatosFavoritosService {
     this.favoritosSubject.next(salvos || []);
   }
 
-  async adicionarFavorito(contato: any) {
-    const favoritosAtuais = this.favoritosSubject.value;
-    if (!favoritosAtuais.some(f => f.nome === contato.nome)) {
-      const atualizados = [...favoritosAtuais, contato];
-      this.favoritosSubject.next(atualizados);
-      await this.storage.set(this.chave, atualizados);
-      this.exibirToast(`Contato "${contato.nome}" adicionado aos favoritos.`, 'medium');
-    }
+  isFavorito(id: number): boolean {
+    return this.favoritosSubject.value.some(f => f.id === id);
   }
 
-  async removerFavorito(nome: string, mostrarToast: boolean = true) {
-  const favoritosAtuais = this.favoritosSubject.value;
-  const atualizados = favoritosAtuais.filter(f => f.nome !== nome);
-  this.favoritosSubject.next(atualizados);
-  await this.storage.set(this.chave, atualizados);
+  atualizarListaFavoritos(novaLista: any[]) {
+    this.favoritosSubject.next(novaLista);
+  }
 
-  if (mostrarToast) {
-    this.exibirToast(`Contato "${nome}" removido dos favoritos.`, 'medium');
+  async adicionarFavorito(contato: any) {
+  const favoritosAtuais = this.favoritosSubject.value;
+  if (!favoritosAtuais.some(f => f.id === contato.id)) {
+    const atualizados = [...favoritosAtuais, contato];
+    this.favoritosSubject.next(atualizados);
+    await this.storage.set(this.chave, atualizados);
+    this.exibirToast(`Contato "${contato.nome}" adicionado aos favoritos.`, 'medium');
   }
 }
+
+  async removerFavorito(id: number, mostrarToast: boolean = true) {
+    const favoritosAtuais = this.favoritosSubject.value;
+    
+    // Encontrar o contato que será removido
+    const contatoRemovido = favoritosAtuais.find(f => f.id === id);
+
+    // Filtrar a nova lista sem o contato
+    const atualizados = favoritosAtuais.filter(f => f.id !== id);
+    this.favoritosSubject.next(atualizados);
+    await this.storage.set(this.chave, atualizados);
+
+    // Mostrar toast com o nome do contato (se encontrado)
+    if (mostrarToast && contatoRemovido) {
+      this.exibirToast(`Contato "${contatoRemovido.nome}" removido dos favoritos.`, 'medium');
+    }
+  }
 
   getFavoritos() {
     return this.favoritosSubject.value;

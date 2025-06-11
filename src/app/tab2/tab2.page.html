@@ -8,7 +8,7 @@
   <ion-list>
     <ion-item *ngFor="let contato of favoritos" (click)="abrirDetalhes(contato)">
       <ion-label>{{ contato.nome }}</ion-label>
-      <ion-button slot="end" fill="clear" (click)="removerFavorito(contato.nome); $event.stopPropagation()">
+      <ion-button slot="end" fill="clear" (click)="removerFavorito(contato.id); $event.stopPropagation()">
       <!-- O uso de $event.stopPropagation() dentro do botão de remover 
        evita que o clique no botão também dispare a abertura da página de detalhes.--> 
         <ion-icon name="heart" color="danger"></ion-icon>

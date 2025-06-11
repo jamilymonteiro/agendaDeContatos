@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { Storage } from '@ionic/storage-angular';
-import { AlertController, NavController, ToastController  } from '@ionic/angular';
+import { AlertController, NavController, ToastController } from '@ionic/angular';
 import { ContatosFavoritosService } from 'src/app/services/contatos-favoritos.service';
 
 @Component({
@@ -11,9 +11,8 @@ import { ContatosFavoritosService } from 'src/app/services/contatos-favoritos.se
   standalone: false
 })
 export class DetalhesPage {
-  // Objeto que vai armazenar o contato atual:
   contato: any;
-  // Chave usada no Storage para salvar a lista de contatos:
+  eFavorito: boolean = false;
   private chave_storage = 'lista_contatos';
 
   constructor(
@@ -24,34 +23,30 @@ export class DetalhesPage {
     private favoritosService: ContatosFavoritosService,
     private toastCtrl: ToastController
   ) {
-    // Verifica se foi passado um contato pela navegação (ao vir da tela anterior):
     const nav = this.router.getCurrentNavigation();
     if (nav?.extras?.state?.['contato']) {
       this.contato = nav.extras.state['contato'];
+      this.eFavorito = this.favoritosService.isFavorito(this.contato.id); // ← usa o ID
     }
   }
 
-  // Função para favoritar ou desfavoritar o contato
-async favoritarContato() {
-  const favoritos = this.favoritosService.getFavoritos();
-  const jaFavoritado = favoritos.some(f => f.nome === this.contato.nome);
+  async favoritarContato() {
+    if (this.eFavorito) {
+      const alerta = await this.alertCtrl.create({
+        header: 'Aviso',
+        message: 'Este contato já está favoritado.',
+        buttons: ['OK']
+      });
+      await alerta.present();
+      return;
+    }
 
-  if (jaFavoritado) {
-    // Se já está na lista de favoritos, mostra alerta
-    const alerta = await this.alertCtrl.create({
-      header: 'Aviso',
-      message: 'Este contato já está favoritado.',
-      buttons: ['OK']
-    });
-    await alerta.present();
-  } else {
-    // Se não está, adiciona aos favoritos
     await this.favoritosService.adicionarFavorito(this.contato);
-    this.contato.favorito = true;
+    this.eFavorito = true;
 
-    // Atualiza o status de favorito também no armazenamento local
+    // Atualiza o Storage geral (se quiser refletir visualmente em outras telas)
     const contatos = await this.storage.get(this.chave_storage) || [];
-    const index = contatos.findIndex((c: any) => c.nome === this.contato.nome);
+    const index = contatos.findIndex((c: any) => c.id === this.contato.id);
     if (index > -1) {
       contatos[index].favorito = true;
       await this.storage.set(this.chave_storage, contatos);
@@ -59,7 +54,6 @@ async favoritarContato() {
 
     this.router.navigate(['/tabs/tab2']);
   }
-}
 
   editarContato() {
     this.router.navigate(['/adicionar'], {
@@ -68,41 +62,38 @@ async favoritarContato() {
   }
 
   async excluirContato() {
-  const alerta = await this.alertCtrl.create({
-    header: 'Confirmar',
-    message: 'Tem certeza que deseja excluir este contato?',
-    buttons: [
-      {
-        text: 'Cancelar',
-        role: 'cancel'
-      },
-      {
-        text: 'Excluir',
-        handler: async () => {
-          // Remove o contato da lista e atualiza o Storage
-          const contatos = await this.storage.get(this.chave_storage) || [];
-          const atualizados = contatos.filter((c: any) => c.nome !== this.contato.nome);
-          await this.storage.set(this.chave_storage, atualizados);
+    const alerta = await this.alertCtrl.create({
+      header: 'Confirmar',
+      message: 'Tem certeza que deseja excluir este contato?',
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel'
+        },
+        {
+          text: 'Excluir',
+          handler: async () => {
+            const contatos = await this.storage.get(this.chave_storage) || [];
+            const atualizados = contatos.filter((c: any) => c.id !== this.contato.id);
+            await this.storage.set(this.chave_storage, atualizados);
 
-          // Também remove dos favoritos (caso esteja lá)
-          await this.favoritosService.removerFavorito(this.contato.nome, false);
+            // Remove dos favoritos (usando id corretamente)
+            await this.favoritosService.removerFavorito(this.contato.id, false);
 
-          // Mostra o toast de confirmação
-          const toast = await this.toastCtrl.create({
-            message: 'Contato excluído com sucesso!',
-            duration: 2000,
-            color: 'medium',
-            position: 'bottom'
-          });
-          await toast.present();
+            const toast = await this.toastCtrl.create({
+              message: 'Contato excluído com sucesso!',
+              duration: 2000,
+              color: 'medium',
+              position: 'top'
+            });
+            await toast.present();
 
-          // Volta para a tela anterior
-          this.navCtrl.back();
+            this.navCtrl.back();
+          }
         }
-      }
-    ]
-  });
+      ]
+    });
 
-  await alerta.present();
-}
+    await alerta.present();
+  }
 }
