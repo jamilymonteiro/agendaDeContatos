@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Storage } from '@ionic/storage-angular';
 import { ActivatedRoute } from '@angular/router';
-import { AlertController } from '@ionic/angular';
+import { AlertController, ToastController  } from '@ionic/angular';
 
 
 @Component({
@@ -21,7 +21,8 @@ export class Tab3Page {
     private fb: FormBuilder,
     private storage: Storage,
     private route: ActivatedRoute,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private toastController: ToastController
   ) {
     this.perfilForm = this.fb.group({
       nome: ['', Validators.required],
@@ -55,17 +56,26 @@ export class Tab3Page {
 
   // Método para salvar o perfil (cadastro ou edição)
   async salvarPerfil() {
-    if (this.perfilForm.invalid) {
-      this.perfilForm.markAllAsTouched(); // Marca campos para exibir erros
-      return;
-    }
-
-    const perfilSalvo = this.perfilForm.value; // Pega os dados do formulário
-    await this.storage.set('perfil', perfilSalvo); // Salva no Storage local
-    this.usuario = perfilSalvo; // Atualiza o objeto usuário na tela
-    this.mostrarFormulario = false; // Esconde o formulário
-    this.editando = false; // Sai do modo edição
+  if (this.perfilForm.invalid) {
+    this.perfilForm.markAllAsTouched();
+    return;
   }
+
+  const perfilSalvo = this.perfilForm.value;
+  await this.storage.set('perfil', perfilSalvo);
+  this.usuario = perfilSalvo;
+  this.mostrarFormulario = false;
+  this.editando = false;
+
+  // Exibe o toast de sucesso
+  const toast = await this.toastController.create({
+  message: 'Perfil salvo com sucesso!',
+  duration: 2000,
+  color: 'success',
+  position: 'bottom'
+});
+  await toast.present();
+}
 
   cancelar() {
     this.mostrarFormulario = false;
@@ -106,6 +116,15 @@ export class Tab3Page {
           this.perfilForm.reset();
           this.mostrarFormulario = false;
           this.editando = false;
+
+          // Exibe o toast de confirmação
+          const toast = await this.toastController.create({
+            message: 'Perfil excluído com sucesso!',
+            duration: 2000,
+            color: 'danger',
+            position: 'bottom'
+          });
+          await toast.present();
         }
       }
     ]

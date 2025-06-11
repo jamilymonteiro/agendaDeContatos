@@ -3,6 +3,8 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Storage } from '@ionic/storage-angular';
+import { ToastController } from '@ionic/angular';
+
 
 @Component({
   selector: 'app-adicionar',
@@ -21,7 +23,8 @@ export class AdicionarPage {
   constructor(
     private router: Router,
     private storage: Storage,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private toastCtrl: ToastController
   ) {
     // Inicializa o formulário com validações
     this.perfilForm = this.fb.group({
@@ -80,7 +83,17 @@ export class AdicionarPage {
     }
     // Salva a lista atualizada no Storage:
     await this.storage.set(this.chave_storage, contatos);
-    // Limpa o formulário após salvar e volta para tab1
+
+    // Exibe o toast de confirmação
+    const toast = await this.toastCtrl.create({
+      message: this.contatoOriginal ? 'Contato atualizado com sucesso!' : 'Contato salvo com sucesso!',
+      duration: 2000, // duração em ms
+      color: 'success',
+      position: 'bottom' // pode ser 'top', 'middle' ou 'bottom'
+    });
+    await toast.present();
+
+    // Após o toast, limpa o formulário e navega
     this.perfilForm.reset();
     this.router.navigate(['/tabs/tab1']);
   }
@@ -90,7 +103,7 @@ export class AdicionarPage {
     this.router.navigate(['/tabs/tab1']);
   }
 
-  // Getter para facilitar o acesso ao FormGroup de endereço no HTML
+  
   get enderecoFormGroup(): FormGroup {
     return this.perfilForm.get('endereco') as FormGroup;
   }
