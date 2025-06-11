@@ -39,7 +39,7 @@ export class Tab2Page implements OnInit {
         message: mensagem,
         duration: 2000,
         position: 'top',
-        color: 'warning' // Você pode mudar para 'success', 'danger', etc.
+        color: 'medium' // Você pode mudar para 'success', 'danger', etc.
       });
       toast.present();
     }

@@ -71,7 +71,7 @@ export class Tab3Page {
   const toast = await this.toastController.create({
   message: 'Perfil salvo com sucesso!',
   duration: 2000,
-  color: 'success',
+  color: 'medium',
   position: 'bottom'
 });
   await toast.present();
@@ -121,7 +121,7 @@ export class Tab3Page {
           const toast = await this.toastController.create({
             message: 'Perfil excluído com sucesso!',
             duration: 2000,
-            color: 'danger',
+            color: 'medium',
             position: 'bottom'
           });
           await toast.present();

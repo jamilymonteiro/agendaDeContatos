@@ -88,7 +88,7 @@ export class AdicionarPage {
     const toast = await this.toastCtrl.create({
       message: this.contatoOriginal ? 'Contato atualizado com sucesso!' : 'Contato salvo com sucesso!',
       duration: 2000, // duração em ms
-      color: 'success',
+      color: 'medium',
       position: 'bottom' // pode ser 'top', 'middle' ou 'bottom'
     });
     await toast.present();

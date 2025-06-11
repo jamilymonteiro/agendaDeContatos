@@ -91,7 +91,7 @@ async favoritarContato() {
           const toast = await this.toastCtrl.create({
             message: 'Contato excluído com sucesso!',
             duration: 2000,
-            color: 'danger',
+            color: 'medium',
             position: 'bottom'
           });
           await toast.present();

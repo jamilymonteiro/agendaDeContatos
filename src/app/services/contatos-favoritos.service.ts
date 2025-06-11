@@ -30,7 +30,7 @@ export class ContatosFavoritosService {
       const atualizados = [...favoritosAtuais, contato];
       this.favoritosSubject.next(atualizados);
       await this.storage.set(this.chave, atualizados);
-      this.exibirToast(`Contato "${contato.nome}" adicionado aos favoritos.`, 'success');
+      this.exibirToast(`Contato "${contato.nome}" adicionado aos favoritos.`, 'medium');
     }
   }
 
@@ -41,7 +41,7 @@ export class ContatosFavoritosService {
   await this.storage.set(this.chave, atualizados);
 
   if (mostrarToast) {
-    this.exibirToast(`Contato "${nome}" removido dos favoritos.`, 'warning');
+    this.exibirToast(`Contato "${nome}" removido dos favoritos.`, 'medium');
   }
 }
 
@@ -49,7 +49,7 @@ export class ContatosFavoritosService {
     return this.favoritosSubject.value;
   }
 
-  private async exibirToast(mensagem: string, cor: 'success' | 'warning' | 'danger' = 'success') {
+  private async exibirToast(mensagem: string, cor: 'success' | 'medium' | 'medium' = 'success') {
     const toast = await this.toastController.create({
       message: mensagem,
       duration: 2000,
